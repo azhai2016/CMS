@@ -1,0 +1,94 @@
+{extend name="Layout/index" /}
+
+{block name="main"}
+<link rel="stylesheet" href="/static/css/login.css?444" />
+<body class="beg-login-bg">
+<div class="beg-login-box">
+    <header>
+        <h1>后台登录</h1>
+    </header>
+    <div class="beg-login-main" style="{$timer>3?'height:300px':''}">
+        <form action="login" class="layui-form" method="post">
+	
+            <div class="layui-form-item">
+                <label class="beg-login-icon">
+                    <i class="layui-icon">&#xe612;</i>
+                </label>
+                <input type="text" name="name" lay-verify="userName" autocomplete="off" placeholder="这里输入登录名" class="layui-input">
+            </div>
+            <div class="layui-form-item">
+                <label class="beg-login-icon">
+                    <i class="layui-icon">&#xe642;</i>
+                </label>
+                <input type="password" name="password" id="pwd" lay-verify="password" autocomplete="off" placeholder="这里输入密码" class="layui-input">
+            </div>
+	
+			<div class="layui-form-item captchaform" style="{$timer>3?:'display:none'}">
+                <label class="beg-login-icon">
+                    <i class="layui-icon">&#xe857;</i>
+                </label>
+		       <input type="text" name="captcha" id="captcha" lay-verify="captcha" autocomplete="off" placeholder="这里输入验证码" class="layui-input">
+		    </div>
+			
+			<div class="layui-form-item captchaimg" style="{$timer>3?:'display:none'}" >
+                <div><img src="{:captcha_src()}" class="cimg" onclick="this.src='{:captcha_src()}?x='+Math.random();" /></div>
+            </div>
+			
+            <div class="layui-form-item">
+                <div class="beg-pull-left beg-login-remember">
+                    <label>记住帐号？</label>
+                    <input type="checkbox" name="remember" value="true" lay-skin="switch"  title="记住帐号">
+                </div>
+                <div class="beg-pull-right">
+                    <button class="layui-btn layui-btn-primary" lay-submit lay-filter="login">
+                        <i class="layui-icon">&#xe650;</i> 登录
+                    </button>
+                </div>
+                <div class="beg-clear"></div>
+            </div>
+        </form>
+    </div>
+   
+</div>
+</body>
+{/block}
+
+
+{block name="footer"}
+    <script>
+        layui.use(['layer', 'form'], function() {
+            var layer = layui.layer,
+                $ = layui.jquery,
+                form = layui.form;
+
+			
+			form.on('submit(login)',function(d){
+			   var data = d.field;
+				console.log(data);
+			   $.post("{:url('admin/login/login')}",data,function(res){
+			      console.log(res); 
+				   
+				  if (res.data===1) {
+					 $('.captchaform,.captchaimg').show(); 
+					  $('.beg-login-main').css('height','300px');
+					  $('.cimg').click();
+					  layer.tips(res.msg, '#captcha',{shade:[0.5,'#ccc'],time:1000});
+				  }
+				  else
+				  if(res.data===3){
+					 window.location.href="{:url('admin/index/index')}";
+				  } 
+				  else{
+		 			  $('.cimg').click();
+					  $('#captcha').val('');
+					  layer.tips(res.msg, '#pwd',{shade:[0.5,'#ccc'],time:1000});
+				   }
+				   
+			   }); 		
+				
+			   return false;
+			});
+			
+        });
+    </script>
+{/block}

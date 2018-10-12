@@ -30,7 +30,7 @@ class Users extends Migrator
     {
         $table = $this->table('users',['comment'=>'用户表']);
         $table->addColumn('name', 'string', ['limit' => 20,'default'=>'','comment'=>'用户名称'])
-            ->addColumn('passwd', 'string', ['limit' => 50,'comment'=>'密码'])
+            ->addColumn('password', 'string', ['limit' => 50,'comment'=>'密码'])
             ->addColumn('description', 'string', ['null' => true,'comment'=>'说明'])
             ->addColumn('created_at', 'datetime',['comment'=>'创建时间'])
             ->addColumn('updated_at', 'datetime',['comment'=>'更新时间'])
